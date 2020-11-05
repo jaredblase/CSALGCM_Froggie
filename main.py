@@ -8,7 +8,7 @@ class Lane:
         self.speed = speed
 
         self.lane_num = i
-        self.end = end
+        self.end = end + interval
         self.cars = range(first, end, interval)  # position of cars
 
     def next(self):
@@ -19,21 +19,13 @@ class Lane:
             else:
                 self.first += self.speed
         else:
-            if self.first + self.speed - self.interval <= Lane.width:
+            if self.first + self.speed - self.interval < Lane.width:
                 self.first += self.speed - self.interval
             else:
                 self.first += self.speed
 
         # if Froggie in lane
-        if y_pos == self.lane_num:
-            temp = self.cars
-            self.cars = range(self.first, self.end, self.interval)
-
-            for init, final in zip(temp, self.cars):
-                if x_pos in range(final, init, -1):
-                    raise Exception
-        else:
-            self.cars = range(self.first, self.end, self.interval)
+        # I don't really know now
 
     def display(self):
         for j in range(Lane.width):
@@ -56,7 +48,6 @@ for i in range(nums[0]):
         end = -1
         lanes.append(Lane(Lane.width - 1 - lane_info[0], -lane_info[1], -lane_info[2]))
 
-
 # read moves and set position
 text = input().split()
 x_pos = int(text[0])
@@ -74,12 +65,15 @@ try:
         else:
             y_pos += -1 if move == 'U' else 1
 
-        # not reached end of line
-        if y_pos != -1:
+        # if end reached
+        if y_pos == -1:
+            break
+        else:
             for lane in lanes:
-                # lane.display()
                 lane.next()
-            # print()
+
+    if y_pos != -1:
+        raise Exception
 
     print('safe')
 

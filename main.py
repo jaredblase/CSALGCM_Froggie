@@ -2,35 +2,38 @@ class Lane:
     # width of the board (static var)
     width = 0
 
-    def __init__(self, lane_num, first, interval, speed):
-        self.lane_num = lane_num
+    def __init__(self, first, interval, speed):
         self.first = first
         self.interval = interval
         self.speed = speed
-        if lane_num % 2 == 0:
-            self.basis = Lane.width
-        else:
-            self.basis = -1
 
-        self.cars = range(first, self.basis, interval)
+        self.lane_num = i
+        self.end = end
+        self.cars = range(first, end, interval)  # position of cars
 
     def next(self):
         # if there is a new car coming
-        if self.first >= self.interval - self.speed:
-            self.first += self.speed - self.interval
+        if self.interval > 0:
+            if self.first >= self.interval - self.speed:
+                self.first += self.speed - self.interval
+            else:
+                self.first += self.speed
         else:
-            self.first += self.speed
+            if self.first + self.speed - self.interval <= Lane.width:
+                self.first += self.speed - self.interval
+            else:
+                self.first += self.speed
 
-        # if Froggie not in lane
-        if y_pos != self.lane_num:
-            self.cars = range(self.first, self.basis, self.interval)
-        else:
+        # if Froggie in lane
+        if y_pos == self.lane_num:
             temp = self.cars
-            self.cars = range(self.first, self.basis, self.interval)
+            self.cars = range(self.first, self.end, self.interval)
 
             for init, final in zip(temp, self.cars):
                 if x_pos in range(final, init, -1):
                     raise Exception
+        else:
+            self.cars = range(self.first, self.end, self.interval)
 
     def display(self):
         for j in range(Lane.width):
@@ -47,9 +50,11 @@ Lane.width = nums[1]
 for i in range(nums[0]):
     lane_info = [int(x) for x in input().split()]
     if i % 2 == 0:
-        lanes.append(Lane(i, lane_info[0], lane_info[1], lane_info[2]))
+        end = Lane.width
+        lanes.append(Lane(lane_info[0], lane_info[1], lane_info[2]))
     else:
-        lanes.append(Lane(i, Lane.width - 1 - lane_info[0], -lane_info[1], -lane_info[2]))
+        end = -1
+        lanes.append(Lane(Lane.width - 1 - lane_info[0], -lane_info[1], -lane_info[2]))
 
 
 # read moves and set position
@@ -72,9 +77,9 @@ try:
         # not reached end of line
         if y_pos != -1:
             for lane in lanes:
-                lane.display()
+                # lane.display()
                 lane.next()
-            print()
+            # print()
 
     print('safe')
 

@@ -1,36 +1,6 @@
-class Lane:
-    # width of the board (static var)
-    width = 0
-
-    def __init__(self, first, interval, speed):
-        self.first = first
-        self.interval = interval
-        self.speed = speed
-
-        self.lane_num = i
-        self.end = end + interval
-        self.cars = range(first, end, interval)  # position of cars
-
-    def next(self):
-        # if there is a new car coming
-        if self.interval > 0:
-            if self.first >= self.interval - self.speed:
-                self.first += self.speed - self.interval
-            else:
-                self.first += self.speed
-        else:
-            if self.first + self.speed - self.interval < Lane.width:
-                self.first += self.speed - self.interval
-            else:
-                self.first += self.speed
-
-        # if Froggie in lane
-        # I don't really know now
-
-    def display(self):
-        for j in range(Lane.width):
-            print('0' if j not in self.cars else '1', end=' ')
-        print()
+from lane import Lane, DeadError
+from leftlane import LeftLane
+from rightlane import RightLane
 
 
 # read first line
@@ -41,12 +11,8 @@ Lane.width = nums[1]
 # read lane infos
 for i in range(nums[0]):
     lane_info = [int(x) for x in input().split()]
-    if i % 2 == 0:
-        end = Lane.width
-        lanes.append(Lane(lane_info[0], lane_info[1], lane_info[2]))
-    else:
-        end = -1
-        lanes.append(Lane(Lane.width - 1 - lane_info[0], -lane_info[1], -lane_info[2]))
+    lanes.append(RightLane(lane_info[0], lane_info[1], lane_info[2], i) if i % 2 == 0 else
+                 LeftLane(lane_info[0], lane_info[1], lane_info[2], i))
 
 # read moves and set position
 text = input().split()
@@ -55,7 +21,7 @@ y_pos = nums[0]
 
 try:
     if text[1].count('U') < nums[0] + 1:
-        raise Exception
+        raise DeadError
 
     for move in text[1]:
         if move == 'L':
@@ -70,12 +36,12 @@ try:
             break
         else:
             for lane in lanes:
-                lane.next()
+                lane.next(x_pos, y_pos)
 
     if y_pos != -1:
-        raise Exception
+        raise DeadError
 
     print('safe')
 
-except:
+except DeadError:
     print('squish')

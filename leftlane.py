@@ -3,11 +3,8 @@ from lane import Lane, DeadError
 
 class LeftLane(Lane):
     def __init__(self, offset, interval, speed, lane_num):
-        self.first = Lane.width - offset - 1
-        self.interval = -interval
-        self.speed = -speed
+        super().__init__(Lane.width - offset - 1, -interval, -speed, lane_num)
 
-        self.lane_num = lane_num
         self.cars = range(self.first, -1, self.interval)  # position of cars
 
     def next(self, x_pos, y_pos):

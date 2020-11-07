@@ -3,17 +3,14 @@ from lane import Lane, DeadError
 
 class RightLane(Lane):
     def __init__(self, first, interval, speed, lane_num):
-        self.first = first
-        self.interval = interval
-        self.speed = speed
-        self.incoming_car = interval - speed
-        self.lane_num = lane_num
+        super().__init__(first, interval, speed, lane_num)
+
         self.cars = range(first, Lane.width, interval)  # position of cars
 
     def next(self, x_pos, y_pos):
         # check if new car is coming into view
-        if self.first >= self.incoming_car:
-            self.first -= self.incoming_car
+        if self.first >= self.interval - self.speed:
+            self.first -= self.interval - self.speed
         else:
             self.first += self.speed
 
